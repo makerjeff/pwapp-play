@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>indexDB play</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+</head>
+<body>
+
+<button id="xhr_button">perform XHR</button>
+<button id="indexdb_checker_button">check for indexDB</button>
+
+<!-- promisified XHR -->
+<script>
+    function make_request(method, url) {
+        return new Promise(function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, url);
+
+            // on XHR load event
+            xhr.onload = function() {
+
+                // if status is within the 200 range...
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(xhr.response);
+                } else {
+                    reject({
+                        status: this.status, statusText: xhr.statusText
+                    });
+                }
+            };
+
+            // send XHR
+            xhr.send();
+        });
+    }
+</script>
+
+
+
+<!-- main script -->
+<script>
+
+    var db;
+    var indexdb_button = document.getElementById('indexdb_checker_button');
+
+    var customer_data = [
+        {ssn: '444-44-4444', name: 'Bill', age: 35, email: 'bill@company.com'},
+        {ssn: '555-55-5555', name: 'Donna', age: 32, email: 'donna@home.org'}
+    ];
+
+    // INDEXED-DB
+    indexdb_button.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('check for indexDB');
+    });
+
+
+    // indexDB code here...
+    window.addEventListener('load', function(e) {
+        console.log('everything loaded.');
+
+        var request = window.indexedDB.open('MyTestDatabase', 1);
+
+        request.onerror = function(e) {
+            // do something with request.errorCode.
+            alert('Allow please!');
+        };
+
+        request.onsuccess = function(e) {
+            // Do something with request.result.
+            db = e.target.result;   // instance IDB Database
+
+
+            db.onerror = function(e) {
+                alert('database error: ' + e.target.errorCode);
+            };
+
+        };
+
+        request.onupgradeneeded = function(e) {
+            var db = e.target.result;
+
+            var object_store = db.createObjectStore('customers', {keyPath: 'ssn'});
+
+            object_store.createIndex('name', 'name', {unique: false});
+
+            object_store.createIndex('email', 'email', {unique: true});
+
+            object_store.transaction.oncomplete = function(e) {
+                //store values in newly created object_store.
+
+                var customer_object_store = db.transaction('customers', 'readwrite', object_store('customers'));
+
+                customer_data.forEach(function(elem, ind, arr) {
+                    customer_object_store.add(elem);
+                });
+            };
+        };
+    });
+
+    // TODO: abandoned, restart with indexdb-play 2
+
+
+
+</script>
+
+</body>
+</html>

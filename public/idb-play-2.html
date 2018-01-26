@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>idb-play-2</title>
+</head>
+<body>
+
+<button id="button_01">button 01</button>
+
+
+<script>
+
+    const customerData = [
+        {id: '00-01', name: 'Bill', age: 35, email: 'bill@company.com'},
+        {id: '00-02', name: 'Donna', age: 32, email: 'donna@home.org'}
+    ];
+
+</script>
+<script>
+
+    var button_01 = document.getElementById('button_01');
+
+
+    // no prefixes minimal experiment
+
+    if (!window.indexedDB) {
+        window.alert("your browser sucks and doesn't support IndexedDB.");
+    }
+
+    var db, object_store;
+    var request = window.indexedDB.open('newDatabase', 1);
+
+    // if database can't connect...
+    request.onerror = function(evt) {
+        console.log('error: ');
+    };
+
+    // if database connects...
+    request.onsuccess = function(evt) {
+        db = request.result;
+        console.log('success: ' + db);
+    };
+
+    // only place to alter the structure of the db.
+    request.onupgradeneeded = function(evt) {
+        db = evt.target.result; // evt.target.result = returned db.
+
+        var object_store = db.createObjectStore('customers', {keyPath: 'id'});
+
+        customerData.forEach(function(elem, ind, arr) {
+            object_store.add(elem);
+
+            console.log('added: ' + elem);
+        });
+
+    };
+
+    function add() {
+        var request = db.transaction(['customers'], 'readwrite').objectStore('customers').add(customerData[0]);
+
+        request.onsuccess = function(evt) {
+
+        };
+
+        request.onerror = function(evt) {
+            alert('unable to add, already in db!');
+        };
+    }
+
+
+
+    // EVENTS
+    button_01.addEventListener('click', function(e) {
+        console.log('button clicked.');
+
+        console.log('attempting to inject data into database.');
+
+        add();
+    });
+
+    window.addEventListener('load', function(e) {
+        console.log('DOM has loaded.');
+    });
+
+
+</script>
+</body>
+</html>

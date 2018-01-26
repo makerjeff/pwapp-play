@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Progressive Web App</title>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        header {
+            width: auto;
+            height: 100px;
+
+            background-color: rgba(0,175, 255, 1);
+            box-shadow: 0 2px 2px rgba(0,0,0,0.25);
+
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+
+        }
+
+        #top_nav .header_button {
+            padding: 0 10px;
+            background: rgba(0,0,0,0);
+            border: 0;
+            cursor: pointer;
+            color: white;
+
+        }
+
+        /*nav ul {*/
+            /*list-style: none;*/
+        /*}*/
+        /*nav ul li {*/
+            /*display: inline;*/
+            /*color: white;*/
+        /*}*/
+
+    </style>
+</head>
+<body>
+
+<header>
+
+    <div id="logo" class="logo">COMPANY LOGO</div>
+
+    <nav id="top_nav">
+        <button id="reload_button" class="header_button">reload</button>
+        <button id="add_button" class="header_button">add</button>
+    </nav>
+</header>
+
+<!-- MAIN content goes here -->
+<main></main>
+
+<div class="dialog_container"></div>
+<div class="loader">
+    <svg width="32" height="32">
+        <circle id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
+    </svg>
+
+
+</div>
+
+<footer></footer>
+
+</body>
+</html>
